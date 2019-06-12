@@ -1,6 +1,10 @@
 
 import 'package:app_demo/data/car_list.dart';
-import 'package:app_demo/data/car_list.dart' as prefix0;
+import 'package:app_demo/pages/car_detail.dart';
+import 'package:app_demo/pages/driver_page.dart';
+import 'package:app_demo/pages/maintenance_page.dart';
+import 'package:app_demo/pages/tpms_page.dart';
+import 'package:app_demo/pages/user_page.dart';
 import 'package:app_demo/service/home_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +21,19 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('上汽大众'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.supervised_user_circle, color: Colors.lightBlue),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => UserProfile())
+              );
+            },
+          )
+        ],
+        // 去除返回按钮
         automaticallyImplyLeading: false,
+        // leading: Icon(Icons.supervised_user_circle),
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -51,7 +67,7 @@ class HomePage extends StatelessWidget {
 
 // 轮播组件
 class SwiperPage extends StatelessWidget {
-  final List<prefix0.SwiperData> swiperList;
+  final List<SwiperData> swiperList;
   SwiperPage({Key key, this.swiperList}) : super(key: key);
 
   Widget _swiperBuilder(BuildContext context, int index) {
@@ -91,6 +107,34 @@ class NavigatorList extends StatelessWidget {
     return InkWell(
       onTap: () {
         print('你点击了$item');
+        switch (item) {
+          case 'TPMS':
+             Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => TPMSModel()
+                )
+              );
+            break;
+          case '应用1': 
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => MaintenanceInfo()
+                )
+              );
+            break;
+          case '应用2': 
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => DriverRecord()
+                )
+              );
+            break;
+          default:
+        }
+        
       },
       child: Container(
         color: Colors.blueAccent,
@@ -133,16 +177,34 @@ class CarList extends StatelessWidget {
   Widget build(BuildContext context) {
     return 
     SizedBox(
-      height: ScreenUtil().setHeight(900.0),
       child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         itemCount: carList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CustomListItem(
-            name: '${carList[index]['name']}',
-            price: '${carList[index]['price']}',
-            desc: '${carList[index]['desc']}',
-            thumbnail: Image.network('${carList[index]['imageUrl']}', fit: BoxFit.fill),
+          return InkWell(
+            child: Column(
+              children: <Widget>[
+                CustomListItem(
+                  name: '${carList[index]['name']}',
+                  price: '${carList[index]['price']}',
+                  desc: '${carList[index]['desc']}',
+                  thumbnail: Image.network('${carList[index]['imageUrl']}', fit: BoxFit.fill),
+                ),
+                Divider()
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => CarDetail(car: carList[index]),
+                )
+              );
+            },
           );
+          
+           
         }
       ),
     );
@@ -208,8 +270,10 @@ class _CarDescription extends StatelessWidget {
               )
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 1.0)),
-            Text(desc, style: TextStyle(fontSize: 10.0)
-            )
+            Text(desc, style: TextStyle(fontSize: 10.0), overflow: TextOverflow.ellipsis,),
+            Text(price, style: TextStyle(
+              color: Colors.red,fontSize: 14.0
+            ))
           ],
         ),
       ),

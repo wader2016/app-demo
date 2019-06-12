@@ -19,10 +19,14 @@ class LoginPage extends StatelessWidget {
          image: DecorationImage(
            image: AssetImage('assets/images/login-bg.jpg'),
            fit: BoxFit.cover,
+           colorFilter: ColorFilter.mode(
+             Color.fromRGBO(255, 255, 255, 0.8),
+             BlendMode.modulate 
+           ),
          )
-          
         ),
         padding: EdgeInsets.all(16.0),
+        // color: Color.fromRGBO(255, 255, 255, 0.5),
         child: Column(
           // 设置主轴对齐方式
           mainAxisAlignment: MainAxisAlignment.center,
